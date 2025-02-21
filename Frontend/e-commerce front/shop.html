@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop</title>
+    <link rel="stylesheet" href="shop.css" />
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="filter-container">
+        <h2>Shop</h2>
+        <input type="text" placeholder="Search" id="searchInput" />
+        <h3>Category</h3>
+        <ul>
+          <li data-category="Clothing">Clothing</li>
+          <li data-category="Footwear">Footwear</li>
+          <li data-category="Accessories">Accessories</li>
+          <li data-category="Tablets">Tablets</li>
+        </ul>
+        <h3>Rate</h3>
+        <div class="ratings">
+          <span data-rating="5">★★★★★</span>
+          <span data-rating="4">★★★★☆</span>
+          <span data-rating="3">★★★☆☆</span>
+          <span data-rating="2">★★☆☆☆</span>
+          <span data-rating="1">★☆☆☆☆</span>
+        </div>
+      </div>
+
+      <!-- Добавленная секция с продуктами -->
+      <div class="products-wrapper">
+        <div class="products-header">
+          <button id="allProductsBtn" class="filter-button">
+            All Products
+          </button>
+          <div class="sort-options">
+            <select id="sortSelect" class="filter-select">
+              <option value="">Sort By:</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="products-container" id="productsContainer"></div>
+      </div>
+    </div>
+    <script src="shop.js"></script>
+  </body>
+</html>

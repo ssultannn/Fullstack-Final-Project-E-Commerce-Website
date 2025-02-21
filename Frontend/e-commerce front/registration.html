@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Register</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        background-color: #f5f5f5;
+        margin: 0;
+      }
+      .flexbox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        margin: 150px;
+        width: 400px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      h2 {
+        margin-bottom: 10px;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .btn {
+        width: 100%;
+        padding: 10px;
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .toggle {
+        margin-top: 10px;
+        cursor: pointer;
+        color: blue;
+      }
+      .logout-btn {
+        width: 100%;
+        padding: 10px;
+        background: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-container"></div>
+    <div class="flexbox">
+      <div class="container">
+        <h2 id="formTitle">Create an account</h2>
+
+        <div id="registerFields">
+          <input type="text" placeholder="Name" />
+          <input type="text" placeholder="Surname" />
+          <input type="email" placeholder="Email" />
+        </div>
+
+        <input type="text" placeholder="Username" />
+        <input type="password" placeholder="Password" />
+
+        <button class="btn" onclick="handleSubmit()">Create account</button>
+
+        <p class="toggle" onclick="toggleForm()">
+          Already have an account? <span id="toggleText">Log in</span>
+        </p>
+
+        <button class="logout-btn" onclick="logout()">Log out</button>
+      </div>
+    </div>
+
+    <script>
+      function loadHeader() {
+        fetch("header.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.body.insertAdjacentHTML("afterbegin", data);
+            const username = localStorage.getItem("username");
+
+            if (username) {
+              setUsername(username);
+            } else {
+              // Handle case where user is not logged in (set a default message)
+              const usernameElement = document.getElementById(
+                "username-placeholder"
+              );
+              if (usernameElement) {
+                usernameElement.textContent = "Guest";
+              }
+            }
+          })
+          .catch((error) => console.error("Ошибка загрузки header:", error));
+      }
+
+      function setUsername(username) {
+        if (!username) return;
+        localStorage.setItem("username", username);
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = username;
+        } else {
+          console.warn("Элемент username-placeholder не найден!");
+        }
+      }
+
+      function logout() {
+        // Remove JWT and username from localStorage
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("username");
+
+        // Reset UI elements to show default state (no username)
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = "Guest"; // Reset to default text
+        }
+
+        // Hide the logout button
+        const logoutButton = document.querySelector(".logout-btn");
+        if (logoutButton) {
+          logoutButton.style.display = "none";
+        }
+
+        // Redirect to the login page or home page
+        window.location.href = "/index.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", loadHeader);
+      let isLogin = false;
+
+      function toggleForm() {
+        isLogin = !isLogin;
+        document.getElementById("formTitle").innerText = isLogin
+          ? "Log in"
+          : "Create an account";
+        document.getElementById("registerFields").style.display = isLogin
+          ? "none"
+          : "block";
+        document.querySelector(".btn").innerText = isLogin
+          ? "Log in"
+          : "Create account";
+        document.getElementById("toggleText").innerText = isLogin
+          ? "Create an account"
+          : "Log in";
+      }
+
+      function handleSubmit() {
+        const username = document.querySelector(
+          "input[placeholder='Username']"
+        ).value;
+        const password = document.querySelector(
+          "input[placeholder='Password']"
+        ).value;
+
+        if (isLogin) {
+          login(username, password);
+        } else {
+          const name = document.querySelector(
+            "input[placeholder='Name']"
+          ).value;
+          const surname = document.querySelector(
+            "input[placeholder='Surname']"
+          ).value;
+          const email = document.querySelector(
+            "input[placeholder='Email']"
+          ).value;
+          register(username, password, name, surname, email);
+        }
+      }
+
+      function register(username, password, name, surname, email) {
+        const registerData = {
+          username: username,
+          password: password,
+          name: name,
+          surname: surname,
+          email: email,
+        };
+
+        fetch("http://localhost:8080/users/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(registerData),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Registration failed");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            alert("Registration successful!");
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert(
+              "Registration failed. Please check the server logs for details."
+            );
+          });
+      }
+
+      function login(username, password) {
+        const loginData = {
+          username: username,
+          password: password,
+        };
+
+        fetch("http://localhost:8080/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // Use JSON as the content type
+          },
+          body: JSON.stringify(loginData), // Send the credentials as JSON
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Login failed");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // Assuming the server sends the JWT token in the response
+            const token = data.token;
+
+            if (token) {
+              // Save the token in localStorage (or sessionStorage)
+              localStorage.setItem("jwt", token);
+
+              // Store the username in localStorage (optional for UI)
+              setUsername(username);
+
+              alert("Login successful!");
+
+              // Redirect the user to the homepage or protected page
+              window.location.href = "index.html"; // Redirect to index.html
+            } else {
+              throw new Error("No token received");
+            }
+          })
+          .catch((error) => {
+            alert("Error: " + error.message);
+          });
+      }
+    </script>
+  </body>
+</html>

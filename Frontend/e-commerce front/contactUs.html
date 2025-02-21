@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Form</title>
+    <style>
+      * {
+        /* margin: 0;
+        padding: 0; */
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 80px auto;
+        padding: 20px;
+        display: flex;
+        gap: 60px;
+      }
+
+      .contact-info {
+        flex: 1;
+        box-shadow: 5px 5px 5px rgb(228, 228, 228);
+        padding: 60px;
+      }
+
+      .contact-form {
+        flex: 2;
+        box-shadow: 5px 5px 5px rgb(228, 228, 228);
+        padding: 60px;
+      }
+      .contact-form input,
+      .contact-form textarea {
+        background-color: rgb(245, 245, 245);
+      }
+
+      .d-flex h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .call-us p {
+        margin-bottom: 15px;
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .write-us p {
+        margin-bottom: 25px;
+        color: #666;
+      }
+
+      .form-group {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      textarea {
+        height: 120px;
+        resize: vertical;
+      }
+
+      button {
+        background-color: red;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s;
+      }
+
+      button:hover {
+        background-color: rgb(177, 2, 2);
+      }
+
+      .required::after {
+        content: "*";
+        color: red;
+        margin-left: 3px;
+      }
+      .d-flex {
+        display: flex;
+        margin: 30px 0;
+      }
+      .d-flex img {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+        margin-top: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="contact-info">
+        <div class="call-us">
+          <div class="d-flex">
+            <img src="photo/call.png" alt="" />
+            <h2>Call To Us</h2>
+          </div>
+          <p>
+            We are available 24/7, 7 days a week.<br /><br />Phone:
+            +88016H112222
+          </p>
+        </div>
+        <hr />
+        <div class="write-us">
+          <div class="d-flex">
+            <img src="photo/letter.png" alt="" />
+            <h2>Write To US</h2>
+          </div>
+
+          <p>
+            Fill out our form and we will contact you within 24 hours.<br />
+            <br />
+            Emails: customer@exclusive.com<br /><br />
+            Emails: support@exclusive.com
+          </p>
+        </div>
+      </div>
+
+      <form class="contact-form">
+        <div class="form-group">
+          <input type="text" placeholder="Your Name" class="required" />
+          <input type="email" placeholder="Your Email" class="required" />
+          <input type="tel" placeholder="Your Phone" class="required" />
+        </div>
+
+        <textarea placeholder="Your Message"></textarea>
+
+        <div style="margin-top: 20px; text-align: right">
+          <button type="submit">Send Message</button>
+        </div>
+      </form>
+    </div>
+    <script>
+      function loadHeader() {
+        fetch("header.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.body.insertAdjacentHTML("afterbegin", data);
+            const username = localStorage.getItem("username");
+
+            if (username) {
+              setUsername(username);
+            } else {
+              // Handle case where user is not logged in (set a default message)
+              const usernameElement = document.getElementById(
+                "username-placeholder"
+              );
+              if (usernameElement) {
+                usernameElement.textContent = "Guest";
+              }
+            }
+          })
+          .catch((error) => console.error("Ошибка загрузки header:", error));
+      }
+
+      function setUsername(username) {
+        if (!username) return;
+        localStorage.setItem("username", username);
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = username;
+        } else {
+          console.warn("Элемент username-placeholder не найден!");
+        }
+      }
+      function logout() {
+        // Remove JWT and username from localStorage
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("username");
+
+        // Reset UI elements to show default state (no username)
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = "Guest"; // Reset to default text
+        }
+
+        // Hide the logout button
+        const logoutButton = document.querySelector(".logout-btn");
+        if (logoutButton) {
+          logoutButton.style.display = "none";
+        }
+
+        // Redirect to the login page or home page
+        window.location.href = "/index.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadFooter();
+      });
+
+      function loadFooter() {
+        fetch("footer.html")
+          .then((response) => response.text())
+          .then((data) => {
+            const footerContainer = document.createElement("div");
+            footerContainer.innerHTML = data;
+            document.body.appendChild(footerContainer);
+          })
+          .catch((error) => console.error("Ошибка загрузки footer:", error));
+      }
+
+      // Вызываем загрузку хедера при загрузке страницы
+      document.addEventListener("DOMContentLoaded", loadHeader);
+    </script>
+  </body>
+</html>

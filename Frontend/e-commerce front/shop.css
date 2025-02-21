@@ -1,0 +1,147 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.main-container {
+  display: flex;
+  padding: 20px;
+}
+
+.filter-container {
+  width: 20%;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.filter-container h2 {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.filter-container input {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.filter-container h3 {
+  margin-top: 20px;
+}
+
+.filter-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.filter-container ul li {
+  margin: 10px 0;
+}
+
+.ratings span {
+  display: block;
+  margin: 5px 0;
+}
+
+/* Исправленные существующие стили */
+.products-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.product {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.product img {
+  height: 280px;
+  width: 240px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.product h3 {
+  margin: 0 0 5px;
+}
+.data-rating,
+.data-category {
+  cursor: pointer;
+}
+.product p {
+  font-size: 1.2em;
+  color: #333;
+  margin: 7px 0;
+}
+
+.product .rating {
+  color: #f39c12;
+  margin: 10px 0;
+}
+
+.product button {
+  background-color: black;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.product button:hover {
+  background-color: #1c1c1c;
+}
+/* Добавленные стили */
+.products-wrapper {
+  width: 80%;
+  padding: 0 20px;
+}
+
+.products-header {
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px;
+  margin-top: 77px;
+}
+
+.filter-button {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.filter-button:hover {
+  background: #f8f8f8;
+}
+
+.filter-select {
+  padding: 10px 17px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 250px;
+}
+.filter-button {
+}
+.filter-button {
+  background-color: rgb(255, 0, 0);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.filter-button:hover {
+  background-color: #c90000;
+}

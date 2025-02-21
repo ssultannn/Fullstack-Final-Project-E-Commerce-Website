@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .cart-container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f5f5f5;
+      }
+      .remove-btn {
+        background-color: #ff4444;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .total-section {
+        float: right;
+        width: 300px;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+      }
+      .checkout-btn {
+        background-color: #ff4444;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+      }
+      .h-100 {
+        height: 40vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cart-container">
+      <h1>Your Cart</h1>
+      <table id="cartTable">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="cartItems">
+          <!-- Cart items will be inserted here -->
+        </tbody>
+      </table>
+
+      <div class="total-section">
+        <h3>Cart Total</h3>
+        <p>Subtotal: $<span id="subtotal">0.00</span></p>
+        <p>Shipping: <span id="shipping">free</span></p>
+        <hr />
+        <p>Total: $<span id="total">0.00</span></p>
+        <button class="checkout-btn" onclick="checkout()">
+          Process to Checkout
+        </button>
+      </div>
+    </div>
+    <div class="h-100"></div>
+    <script>
+      function loadHeader() {
+        fetch("header.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.body.insertAdjacentHTML("afterbegin", data);
+            const username = localStorage.getItem("username");
+
+            if (username) {
+              setUsername(username);
+            } else {
+              // Handle case where user is not logged in (set a default message)
+              const usernameElement = document.getElementById(
+                "username-placeholder"
+              );
+              if (usernameElement) {
+                usernameElement.textContent = "Guest";
+              }
+            }
+          })
+          .catch((error) => console.error("Ошибка загрузки header:", error));
+      }
+
+      function setUsername(username) {
+        if (!username) return;
+        localStorage.setItem("username", username);
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = username;
+        } else {
+          console.warn("Элемент username-placeholder не найден!");
+        }
+      }
+      function logout() {
+        // Remove JWT and username from localStorage
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("username");
+
+        // Reset UI elements to show default state (no username)
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = "Guest"; // Reset to default text
+        }
+
+        // Hide the logout button
+        const logoutButton = document.querySelector(".logout-btn");
+        if (logoutButton) {
+          logoutButton.style.display = "none";
+        }
+
+        // Redirect to the login page or home page
+        window.location.href = "/index.html";
+      }
+
+      // Вызываем загрузку хедера при загрузке страницы
+      document.addEventListener("DOMContentLoaded", loadHeader);
+      // Правильный базовый URL (с двоеточием между localhost и портом)
+      const API_BASE_URL = "http://localhost:8080";
+
+      // Получаем JWT-токен из localStorage
+      function getToken() {
+        return localStorage.getItem("jwt");
+      }
+
+      // Функция для загрузки корзины с сервера
+      async function loadCart() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/basket`, {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          });
+          if (!response.ok) throw new Error("Failed to load cart");
+          const basketItems = await response.json();
+
+          // Получаем детали товаров для каждого элемента корзины
+          const products = await Promise.all(
+            basketItems.map((item) => fetchProductDetails(item.productId))
+          );
+          renderCart(basketItems, products);
+          calculateTotals(basketItems, products);
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error loading cart");
+        }
+      }
+
+      // Функция для получения деталей товара
+      async function fetchProductDetails(productId) {
+        const response = await fetch(`${API_BASE_URL}/products/${productId}`);
+        if (!response.ok) throw new Error("Failed to load product details");
+        return await response.json();
+      }
+
+      // Функция для отображения элементов корзины
+      function renderCart(basketItems, products) {
+        const tbody = document.getElementById("cartItems");
+        tbody.innerHTML = "";
+        basketItems.forEach((item, index) => {
+          const product = products[index];
+          const row = document.createElement("tr");
+          row.innerHTML = `
+      <td><img src="${product.imageUrl}" alt="${product.brand} ${
+            product.model
+          }" width="80"></td>
+      <td>${product.brand} ${product.model}</td>
+      <td>$${product.price.toFixed(2)}</td>
+      <td>${item.quantity}</td>
+      <td>$${(product.price * item.quantity).toFixed(2)}</td>
+      <td>
+        <button class="remove-btn" onclick="removeItem(${
+          item.id
+        })">Remove</button>
+      </td>
+    `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // Функция для расчёта итоговых сумм
+      function calculateTotals(basketItems, products) {
+        let subtotal = 0;
+        for (let i = 0; i < basketItems.length; i++) {
+          subtotal += products[i].price * basketItems[i].quantity;
+        }
+        document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+        document.getElementById("total").textContent = subtotal.toFixed(2);
+      }
+
+      // Функция для удаления элемента из корзины
+      async function removeItem(itemId) {
+        try {
+          // Здесь я предполагаю, что для удаления одного товара используется эндпоинт /basket/remove/{itemId}
+          const response = await fetch(
+            `${API_BASE_URL}/basket/remove/${itemId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${getToken()}`,
+              },
+            }
+          );
+          if (!response.ok) throw new Error("Failed to remove item");
+          loadCart();
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error removing item");
+        }
+      }
+
+      // Обработчик для оформления заказа
+      function checkout() {
+        alert("Redirecting to checkout...");
+        // Добавьте логику оформления заказа здесь
+      }
+
+      // Изначальная загрузка корзины при загрузке страницы
+      document.addEventListener("DOMContentLoaded", () => {
+        if (!getToken()) {
+          window.location.href = "/login.html";
+          return;
+        }
+        loadCart();
+      });
+      function loadFooter() {
+        fetch("footer.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.body.insertAdjacentHTML("beforeend", data);
+          })
+          .catch((error) => console.error("Ошибка загрузки footer:", error));
+      }
+      loadFooter();
+    </script>
+  </body>
+</html>

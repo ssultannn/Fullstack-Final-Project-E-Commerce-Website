@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <!-- Подключаем Bootstrap -->
+
+    <!-- Наши стили подключаются после Bootstrap -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      /* Изолируем все стили хедера через уникальный id */
+      #custom-header * {
+        /* Сбрасываем все стили, чтобы не наследовать настройки Bootstrap */
+        all: unset;
+        /* Задаём box-sizing для корректного расчёта отступов */
+        box-sizing: border-box;
+      }
+      /* Применяем наши стили */
+      #custom-header {
+        display: block;
+        width: 100%;
+        font-family: Arial, sans-serif !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #custom-header .top-bar {
+        display: block;
+        background: red !important;
+        color: white !important;
+        text-align: center !important;
+        padding: 10px !important;
+      }
+      #custom-header .custom-nav {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 15px 220px !important;
+        background: #fff !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+      }
+      #custom-header .custom-nav ul {
+        display: flex !important;
+        list-style: none !important;
+        padding: 0 !important;
+        gap: 15px !important;
+        flex: 1 !important;
+        justify-content: center !important;
+      }
+      #custom-header .custom-nav ul li {
+        display: inline !important;
+      }
+      #custom-header .custom-nav ul li a {
+        text-decoration: none !important;
+        color: black !important;
+      }
+      #custom-header .user-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
+      }
+      #custom-header .search-container {
+        display: flex !important;
+        align-items: center !important;
+        border: 1px solid #ccc !important;
+        border-radius: 5px !important;
+        padding: 5px !important;
+      }
+      #custom-header .search-container input {
+        border: none !important;
+        outline: none !important;
+        padding: 5px !important;
+      }
+      #custom-header .search-container span {
+        cursor: pointer !important;
+        font-size: 20px !important;
+        margin-left: 5px !important;
+      }
+      #custom-header .icon {
+        font-size: 24px !important;
+        cursor: pointer !important;
+      }
+      #custom-header .shop-btn,
+      #custom-header .logout {
+        background-color: red !important;
+        color: white !important;
+        padding: 5px 15px !important;
+        border: none !important;
+        cursor: pointer !important;
+        border-radius: 5px !important;
+      }
+      #custom-header .shop-btn a {
+        color: white !important;
+        text-decoration: none !important;
+      }
+      #custom-header .icon-img {
+        width: 25px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Оборачиваем хедер в контейнер с id="custom-header" -->
+    <header id="custom-header">
+      <div class="top-bar">
+        Summer Sale For All Swim Suits And Free Express Delivery - OFF 50% |
+        <a href="#">ShopNow</a>
+      </div>
+      <nav class="custom-nav">
+        <h1>E-commerce</h1>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="contactUs.html">Contact</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="registration.html">Sign Up</a></li>
+          <li><a class="shop-btn" href="shop.html">Shop</a></li>
+        </ul>
+        <div class="user-actions">
+          <div class="search-container">
+            <input type="text" placeholder="What are you looking for?" />
+            <span>
+              <img class="icon-img" src="photo/search.png" alt="" />
+            </span>
+          </div>
+          <span class="icon">
+            <img
+              class="icon-img"
+              src="photo/basket.png"
+              alt=""
+              onclick="location.href='basket.html'"
+              style="cursor: pointer"
+            />
+          </span>
+          <span class="icon">
+            <img class="icon-img" src="photo/person.png" alt="" />
+          </span>
+          <!-- Место, где отображается username -->
+          <a href="userDetails.html">
+            <p id="username-placeholder">username</p>
+          </a>
+          <button class="logout" onclick="logout()">Log out</button>
+        </div>
+      </nav>
+    </header>
+
+    <script>
+      // Код для отображения имени пользователя
+      document.addEventListener("DOMContentLoaded", function () {
+        const username = localStorage.getItem("username");
+        const usernameElement = document.getElementById("username-placeholder");
+        const logoutButton = document.querySelector(".logout");
+
+        if (username && usernameElement) {
+          usernameElement.textContent = username;
+        } else {
+          usernameElement.textContent = "username";
+          logoutButton.style.display = "none";
+        }
+      });
+
+      function logout() {
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("username");
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = "Guest";
+        }
+        const logoutButton = document.querySelector(".logout-btn");
+        if (logoutButton) {
+          logoutButton.style.display = "none";
+        }
+        window.location.href = "/index.html";
+      }
+    </script>
+  </body>
+</html>

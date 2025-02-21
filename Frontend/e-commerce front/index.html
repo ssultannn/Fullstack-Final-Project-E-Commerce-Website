@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-commerce</title>
+
+    <!-- Подключаем Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Размер карусели */
+      .carousel-item {
+        height: 80vh;
+      }
+
+      .carousel-item img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover; /* Картинка растягивается без искажений */
+      }
+      .shop-collection {
+        display: flex;
+        height: 90vh;
+        width: 90%;
+        margin: 80px auto;
+        gap: 10px;
+      }
+
+      .first-shop {
+        flex: 1;
+        height: 90vh;
+      }
+
+      .second-shop {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .image-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
+
+      .shop-collection img {
+        height: 90%;
+        width: 90%;
+        object-fit: cover;
+        margin: 0;
+      }
+
+      .image-text {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        z-index: 2;
+      }
+
+      /* Для второго изображения во втором блоке */
+      .second-shop .image-container:last-child .image-text {
+        top: auto;
+        bottom: 20px;
+        left: 20px;
+      }
+      .featured {
+        margin-top: 50px;
+        display: flex;
+        align-items: center;
+        margin: 0 120px;
+        margin-left: 80px;
+        color: red;
+        margin-bottom: -30px;
+      }
+      .featured p {
+        margin-top: 20px;
+        margin-left: -20px;
+      }
+      .featured img {
+        width: 20px;
+        height: 40px;
+        margin: 40px;
+      }
+      .g-fl {
+        margin-top: 0;
+        margin: 0 120px;
+        font-size: 40px;
+        font-weight: bolder;
+        margin-bottom: 45px;
+      }
+      .promotion {
+        width: 100%;
+        height: 60vh;
+      }
+      .promotion img {
+        width: 100%;
+        height: 100%;
+      }
+      .promotion-2 {
+        width: 100%;
+        height: 40vh;
+      }
+      .promotion-2 img {
+        width: 100%;
+      }
+      .feedback-container {
+        text-align: center;
+        margin-top: 500px;
+        width: 85%;
+        margin: 400px auto;
+      }
+      .feedback-container h1 {
+        color: red;
+      }
+      .feedback-item {
+        width: 33%;
+        margin: 50px;
+        padding: 30px;
+        text-align: left;
+      }
+      .feedback-item img {
+        width: 15px;
+        height: 15px;
+      }
+      .feedback-item h2 {
+        font-family: Roboto Serif;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 25.76px;
+        margin: 10px 0;
+      }
+      .feedback-item p {
+        font-family: Poppins;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      .feedback-items {
+        display: flex;
+      }
+      .red-item {
+        background-color: #e075757a;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-container"></div>
+
+    <!-- Bootstrap-карусель -->
+    <div
+      id="carouselExample"
+      class="carousel slide"
+      data-bs-ride="carousel"
+      data-bs-interval="3000"
+    >
+      <!-- Индикаторы -->
+      <div class="carousel-indicators">
+        <button
+          type="button"
+          data-bs-target="#carouselExample"
+          data-bs-slide-to="0"
+          class="active"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#carouselExample"
+          data-bs-slide-to="1"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#carouselExample"
+          data-bs-slide-to="2"
+        ></button>
+      </div>
+
+      <!-- Слайды -->
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img
+            src="https://www.apple.com/ecc-shared/iphone/home/images/meta/iphone__kqge21l9n26q_og.png"
+            class="d-block w-100"
+            alt="Slide 1"
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/macbookair-og-202402?wid=1200&hei=630&fmt=jpeg&qlt=95&.v=1707414684423"
+            class="d-block w-100"
+            alt="Slide 2"
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="https://incredideals.co/cdn/shop/files/IMG_5775.jpg?v=1722616923"
+            class="d-block w-100"
+            alt="Slide 3"
+          />
+        </div>
+      </div>
+
+      <!-- Кнопки "назад" и "вперед" -->
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carouselExample"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carouselExample"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+    <div class="featured">
+      <img src="photo/red.png" alt="" />
+      <p>Featured</p>
+    </div>
+    <div class="g-fl"><h3>Shop Collection</h3></div>
+    <div class="shop-collection">
+      <div class="first-shop">
+        <div class="image-container">
+          <img src="photo/headband.png" alt="" />
+        </div>
+      </div>
+      <div class="second-shop">
+        <div class="image-container">
+          <img src="photo/Earbuds.png" alt="" />
+        </div>
+        <div class="image-container">
+          <img src="photo/accessories.png" alt="" />
+        </div>
+      </div>
+    </div>
+    <div class="featured">
+      <img src="photo/red.png" alt="" />
+      <p>Featured</p>
+    </div>
+    <div class="g-fl"><h3>Promotion</h3></div>
+    <div class="promotion">
+      <img src="photo/promotion.png" alt="" />
+    </div>
+    <div class="featured">
+      <img src="photo/red.png" alt="" />
+      <p>Our Products</p>
+    </div>
+    <div class="g-fl"><h3>Special promotion</h3></div>
+    <div class="promotion-2">
+      <img src="photo/iphone.png" alt="" />
+    </div>
+    <div class="feedback-container">
+      <h1>Feedback Corner</h1>
+      <div class="feedback-items">
+        <div class="feedback-item">
+          <img src="photo/kavicki.png" alt="" />
+          <h2>Jessica Brown</h2>
+          <p>
+            The shopping experience was fantastic! The website is easy to
+            navigate, my order arrived earlier than expected, and the clothing
+            quality exceeded my expectations. Will definitely shop here again!
+          </p>
+        </div>
+
+        <div class="feedback-item red-item">
+          <img src="photo/kavicki.png" alt="" />
+
+          <h2>Emma Davis</h2>
+          <p>
+            I'm thrilled with my purchase! The styles are trendy, the fabric is
+            comfortable, and the customer support team was incredibly helpful. A
+            flawless experience overall!
+          </p>
+        </div>
+
+        <div class="feedback-item">
+          <img src="photo/kavicki.png" alt="" />
+
+          <h2>Sophia Garcia</h2>
+          <p>
+            This website is a gem! The checkout process was seamless, the
+            clothes fit true to size, and the delivery was lightning-fast. I
+            couldn't be happier with my order!
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- Подключение Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      function loadHeader() {
+        fetch("header.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.body.insertAdjacentHTML("afterbegin", data);
+            const username = localStorage.getItem("username");
+
+            if (username) {
+              setUsername(username);
+            } else {
+              const usernameElement = document.getElementById(
+                "username-placeholder"
+              );
+              if (usernameElement) {
+                usernameElement.textContent = "Guest";
+              }
+            }
+          })
+          .catch((error) => console.error("Ошибка загрузки header:", error));
+      }
+
+      function setUsername(username) {
+        if (!username) return;
+        localStorage.setItem("username", username);
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = username;
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("username");
+
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = "Guest";
+        }
+
+        const logoutButton = document.querySelector(".logout-btn");
+        if (logoutButton) {
+          logoutButton.style.display = "none";
+        }
+
+        window.location.href = "/index.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", loadHeader);
+      function loadFooter() {
+        fetch("footer.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.body.insertAdjacentHTML("beforeend", data);
+          })
+          .catch((error) => console.error("Ошибка загрузки footer:", error));
+      }
+      loadFooter();
+    </script>
+
+    <script src="script.js"></script>
+  </body>
+</html>

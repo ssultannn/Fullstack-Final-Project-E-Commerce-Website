@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Details</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+        color: #333;
+      }
+      #user-info {
+        background-color: #fff;
+        border-radius: 8px;
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      #user-info p {
+        font-size: 16px;
+        color: #555;
+        line-height: 1.6;
+      }
+      #header-container {
+        margin-bottom: 20px;
+      }
+      .logout-btn {
+        background-color: red;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        display: block;
+        width: 150px;
+        margin: 30px auto;
+      }
+      .logout-btn:hover {
+        background-color: darkred;
+      }
+      .myProducts {
+        background-color: red;
+        color: white;
+        padding: 5px 15px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: 10px 25px;
+      }
+      .myProducts a {
+        text-decoration: none;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-container"></div>
+
+    <button href="myProducts.html" class="myProducts">
+      <a href="myProducts.html"> my products </a>
+    </button>
+    <h1>User Details</h1>
+    <div id="user-info">
+      <p>Loading...</p>
+    </div>
+
+    <script>
+      function loadHeader() {
+        fetch("header.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("header-container").innerHTML = data;
+            const username = localStorage.getItem("username");
+
+            if (username) {
+              setUsername(username);
+            } else {
+              // Handle case where user is not logged in (set a default message)
+              const usernameElement = document.getElementById(
+                "username-placeholder"
+              );
+              if (usernameElement) {
+                usernameElement.textContent = "Guest";
+              }
+            }
+          })
+          .catch((error) => console.error("Ошибка загрузки header:", error));
+      }
+
+      // Add this event listener to ensure the DOM is fully loaded before running the function
+      document.addEventListener("DOMContentLoaded", loadHeader);
+
+      function setUsername(username) {
+        if (!username) return;
+        localStorage.setItem("username", username);
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = username;
+        } else {
+          console.warn("Элемент username-placeholder не найден!");
+        }
+      }
+
+      function logout() {
+        // Remove JWT and username from localStorage
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("username");
+
+        // Reset UI elements to show default state (no username)
+        const usernameElement = document.getElementById("username-placeholder");
+        if (usernameElement) {
+          usernameElement.textContent = "Guest"; // Reset to default text
+        }
+
+        // Hide the logout button
+        const logoutButton = document.querySelector(".logout-btn");
+        if (logoutButton) {
+          logoutButton.style.display = "none";
+        }
+
+        // Redirect to the login page or home page
+        window.location.href = "/index.html";
+      }
+
+      async function fetchUserData() {
+        try {
+          const token = localStorage.getItem("jwt"); // Получаем JWT из localStorage
+
+          if (!token) {
+            throw new Error("No JWT token found");
+          }
+
+          const response = await fetch("http://localhost:8080/users/me", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token, // Передаем токен в заголовке
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+          }
+
+          const user = await response.json();
+          document.getElementById("user-info").innerHTML = `
+      <p><strong>Name:</strong> ${user.name}</p>
+      <p><strong>Surname:</strong> ${user.surname}</p>
+      <p><strong>Email:</strong> ${user.email}</p>
+      <p><strong>Username:</strong> ${user.username}</p>
+      <p><strong>Roles:</strong> ${user.roles.join(", ")}</p>
+    `;
+        } catch (error) {
+          document.getElementById(
+            "user-info"
+          ).innerHTML = `<p>Error: ${error.message}</p>`;
+        }
+      }
+
+      fetchUserData();
+      function loadFooter() {
+        fetch("footer.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.body.insertAdjacentHTML("beforeend", data);
+          })
+          .catch((error) => console.error("Ошибка загрузки footer:", error));
+      }
+      loadFooter();
+    </script>
+  </body>
+</html>
